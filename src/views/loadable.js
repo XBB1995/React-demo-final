@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 
 const Loadable = ({
   loader,
-  // 重命名!!!
+  // 解构对象 重命名!!! 
+  // 原名: 现在名称
   loading: Loading
 }) => {
   return class LoadableComponent extends Component {

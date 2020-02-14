@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 
-import { adminRouter } from './routes'
+import { adminRoutes } from './routes'
 import { Route, Switch, Redirect } from 'react-router-dom'
+import { Frame } from './compoents'
+
+// 通过 Frame 传递 menus 参数
+const menus = adminRoutes.filter(route => route.isNav === true)
 
 // fixBabelImports 通过这个简化组件导入
 // import {
@@ -25,11 +29,10 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 class App extends Component {
   render() {
     return (
-      <div>
-        <div>这里是公共的部分</div>
+      <Frame menus={menus}>
         <Switch>
           {
-            adminRouter.map(route => {
+            adminRoutes.map(route => {
               return (
                 <Route
                   key={route.pathname}
@@ -44,10 +47,10 @@ class App extends Component {
               )
             })
           }
-          <Redirect to={adminRouter[0].pathname} from="/admin" exact />
+          <Redirect to={adminRoutes[0].pathname} from="/admin" exact />
           <Redirect to="/404" />
         </Switch>
-      </div>
+      </Frame>
     )
   }
 }

@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import App from './App'
 
-import { mainRouter } from './routes'
+import { mainRoutes } from './routes'
 
 // 导入样式表文件
 import './index.less'
@@ -16,7 +16,7 @@ render(
         return <App {...routeProps} />
       }} />
       {
-        mainRouter.map(route => {
+        mainRoutes.map(route => {
           return (
             <Route
               key={route.pathname}
