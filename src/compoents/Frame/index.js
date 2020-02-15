@@ -52,9 +52,8 @@ class Frame extends Component {
             <Content
               style={{
                 background: '#fff',
-                padding: 24,
                 margin: 0,
-                minHeight: 280,
+                padding: 10
               }}
             >
               {this.props.children}
