@@ -28,10 +28,19 @@ service.interceptors.response.use((resp) => {
   }
 })
 
-// 向外暴露方法
+// 向外暴露方法 
+// 获取文章列表
 export const getArticles = (offset = 0, limited = 10) => {
   return service.post('/api/v1/articleList', {
     offset,
     limited
+  })
+}
+
+// 删除指定id的文章
+export const deleteArticleById = (id) => {
+  // return service.post(`/api/v1/articleDelete/${id}`)
+  return service.post(`/api/v1/articleDelete`, {
+    id
   })
 }

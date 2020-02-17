@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
-import { Card, Button, Table, Tag } from 'antd'
+import { Card, Button, Table, Tag, Modal, Typography, message, Tooltip } from 'antd'
+
 // import moment from 'moment'
 import dayjs from 'dayjs'
 import XLSX from 'xlsx'
 
-import { getArticles } from '../../requests'
+import {
+  getArticles,
+  deleteArticleById as deleteArticle
+} from '../../requests'
 
 const ButtonGroup = Button.Group
 
@@ -26,7 +30,11 @@ export default class ArticleList extends Component {
       total: 0,
       isLoading: false,
       offset: 0,
-      limited: 10
+      limited: 10,
+      showDeleteModal: false,
+      deleteArticleTitle: '',
+      deleteArticleId: null,
+      deleteLoadingState: false
     }
   }
 
@@ -67,7 +75,11 @@ export default class ArticleList extends Component {
             // 从 record 中解构出 amount
             const { amount } = record
             // 根据阅读量大小 调整Tag颜色
-            return <Tag color={amount > 700 ? "red" : "green"}>{record.amount}</Tag>
+            return (
+              <Tooltip title='文章热度标签' >
+                <Tag color={amount > 700 ? "red" : "green"}>{record.amount}</Tag>
+              </Tooltip>
+            )
           }
         }
       }
@@ -93,16 +105,86 @@ export default class ArticleList extends Component {
     columns.push({
       title: '操作',
       key: 'action',
-      render: () => {
+      render: (record) => {
         return (
           <ButtonGroup>
-            <Button size="small" type="primary">编辑</Button>
-            <Button size="small" type="danger">删除</Button>
+            <Button size="small" type="primary" onClick={this.toEdit.bind(this, record.id)}>编辑</Button>
+            <Button
+              size="small"
+              type="danger"
+              // bind 用于传递参数
+              onClick={this.showDeleteConfirmModal.bind(this, record)}
+            >删除</Button>
           </ButtonGroup>
         )
       }
     })
     return columns
+  }
+
+  // 跳转至编辑页面
+  toEdit = (id) => {
+    // 隐式传参 不推荐 页面间传递数据应尽可能最小化
+    // this.props.history.push({
+    //   pathname: `/admin/article/edit/${record.id}`,
+    //   state: {
+    //     title: record.title
+    //   }
+    // })
+    this.props.history.push(`/admin/article/edit/${id}`)
+  }
+
+  // 弹出 确认删除弹窗 
+  showDeleteConfirmModal = (record) => {
+    // 函数式的模态窗 可定制内容相对较少
+    // Modal.confirm({
+    //   title: <Typography>确认删除 {record.title}?</Typography>,
+    //   content: '此操作不可逆，请谨慎!',
+    //   okText: '残忍删除',
+    //   cancelText: '我再想想',
+    //   onOk: () => {
+    //     deleteArticle(record.id)
+    //       .then(resp => {
+    //         console.log(resp)
+    //       })
+    //   }
+    // })
+    this.setState({
+      showDeleteModal: true,
+      deleteArticleTitle: record.title,
+      deleteArticleId: record.id
+    })
+  }
+
+  // 隐藏 弹窗
+  hideDeleteComfirmModal = () => {
+    this.setState({
+      showDeleteModal: false,
+      deleteLoadingState: false,
+      // deleteArticleTitle: ''
+    })
+  }
+
+  // ajax 删除文章操作
+  deleteArticleById = () => {
+    this.setState({
+      deleteLoadingState: true
+    })
+    deleteArticle(this.state.deleteArticleId)
+      .then(resp => {
+        // console.log(resp)
+        message.success(resp.msg)
+        // 删除后 是留在当前页还是返回首页
+        // 如果需要返回首页 
+        this.setState({
+          offset: 0
+        }, () => {
+          this.getData()
+        })
+      })
+      .finally(() => {
+        this.hideDeleteComfirmModal()
+      })
   }
 
   // ajax 请求
@@ -145,6 +227,7 @@ export default class ArticleList extends Component {
   }
 
   render() {
+    // console.log(this.props)
     return (
       <Card
         title="文章列表"
@@ -171,6 +254,17 @@ export default class ArticleList extends Component {
           }}
         // loading={true}
         />
+        <Modal
+          title='该操作不可逆，请确认！'
+          visible={this.state.showDeleteModal}
+          onCancel={this.hideDeleteComfirmModal}
+          onOk={this.deleteArticleById}
+          confirmLoading={this.state.deleteLoadingState}
+          okText='残忍删除'
+          cancelText='我再想想'
+        >
+          <Typography>确认删除文章《<span style={{ color: '#f55' }}>{this.state.deleteArticleTitle}</span>》?</Typography>
+        </Modal>
       </Card >
     )
   }

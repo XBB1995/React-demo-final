@@ -7,13 +7,16 @@ import './frame.less'
 import logo from './LOGO.png'
 const { Header, Content, Sider } = Layout
 
-@withRouter
+// @withRouter
 class Frame extends Component {
   onMenuClick = ({ key }) => {
     // console.log(this.props)
     this.props.history.push(key)
   }
   render() {
+    const selectedKeyArr = this.props.location.pathname.split('/')
+    // 截取数组前三项的巧妙方法 修改长度
+    selectedKeyArr.length = 3
     return (
       <Layout style={{ minHeight: '100%' }}>
         <Header className="header mi-header" >
@@ -27,7 +30,7 @@ class Frame extends Component {
               mode="inline"
               // 数组 因为存在多选的可能
               // selectedKeys  区别于 defaultSelectedKeys
-              selectedKeys={[this.props.location.pathname]}
+              selectedKeys={[selectedKeyArr.join('/')]}
               style={{ height: '100%', borderRight: 0 }}
               onClick={this.onMenuClick}
             >
@@ -65,4 +68,4 @@ class Frame extends Component {
   }
 }
 
-export default Frame
+export default withRouter(Frame)

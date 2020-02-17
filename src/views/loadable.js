@@ -30,7 +30,8 @@ const Loadable = ({
       return (
         LoadedComponent
           ?
-          <LoadedComponent />
+          // 注意props数据的传递 
+          <LoadedComponent {...this.props} />
           :
           // 组件名必须是大写 需要在对象解构中重命名
           <Loading />

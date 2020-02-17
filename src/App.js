@@ -41,6 +41,7 @@ class App extends Component {
                   exact={route.exact}
                   // 涉及到权限的需要用render来渲染组件
                   render={(routeProps) => {
+                    // console.log(routeProps)
                     return <route.component {...routeProps} />
                   }}
                 />
