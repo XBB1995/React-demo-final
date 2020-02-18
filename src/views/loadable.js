@@ -19,9 +19,7 @@ const Loadable = ({
           this.setState({
             LoadedComponent: resp.default
           })
-        }).catch((err) => {
-          console.log(err)
-        });
+        }).catch(err => console.log(err));
     }
     render() {
       const {
@@ -37,7 +35,7 @@ const Loadable = ({
           <Loading />
       )
     }
-  }
+  };
 }
 
 export default Loadable
