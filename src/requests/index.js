@@ -39,8 +39,23 @@ export const getArticles = (offset = 0, limited = 10) => {
 
 // 删除指定id的文章
 export const deleteArticleById = (id) => {
-  // return service.post(`/api/v1/articleDelete/${id}`)
-  return service.post(`/api/v1/articleDelete`, {
-    id
-  })
+  return service.post(`/api/v1/articleDelete/${id}`)
+  // return service.post(`/api/v1/articleDelete`, {
+  //   id
+  // })
+}
+
+// 通过id获取文章
+export const getArticleById = (id) => {
+  return service.post(`/api/v1/article/${id}`)
+  // 有一个坑！！！ 若接口地址为 /api/v1/article 使用上一行的方法不会报错
+  // 但是 如果用对象传值 则会显示找不到对应的接口
+  // return service.post(`/api/v1/article`, {
+  //   id
+  // })
+}
+
+// 保存文章
+export const saveArticle = (id, data) => {
+  return service.post(`/api/v1/articleEdit/${id}`, data)
 }
