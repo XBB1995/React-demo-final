@@ -1,13 +1,23 @@
 import React, { Component } from 'react'
 import { Layout, Menu, Breadcrumb, Icon, Dropdown, Avatar, Badge } from 'antd'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import { getNotificationList } from '../../actions/notifications'
 
 import './frame.less'
 // 提供LOGO图片的路径
 import logo from './LOGO.png'
 const { Header, Content, Sider, } = Layout
 
+const mapState = state => {
+  return {
+    notificationsCount: state.notifications.list.filter(item => item.hasRead === false).length
+  }
+}
+
 // @withRouter
+@connect(mapState, { getNotificationList })
 class Frame extends Component {
   onMenuClick = ({ key }) => {
     // console.log(this.props)
@@ -18,16 +28,22 @@ class Frame extends Component {
   //   this.props.history.push(key)
   // }
 
+  componentDidMount() {
+    this.props.getNotificationList()
+  }
+
   render() {
     const selectedKeyArr = this.props.location.pathname.split('/')
     // 截取数组前三项的巧妙方法 修改长度
     selectedKeyArr.length = 3
 
-    // 下拉菜单
-    const menu = (
+    // 渲染下拉菜单方法
+    const renderDropdownMenu = () => (
       <Menu onClick={this.onMenuClick}>
         <Menu.Item key="/admin/notifications">
-          通知中心
+          <Badge count={this.props.notificationsCount} offset={[30, 6]}>
+            通知中心
+            </Badge>
         </Menu.Item>
         <Menu.Item key="/admin/settings">
           个人设置
@@ -45,9 +61,9 @@ class Frame extends Component {
             <img src={logo} alt="LOGO-ADMIN"></img>
           </div>
           <div>
-            <Dropdown overlay={menu}>
+            <Dropdown overlay={renderDropdownMenu}>
               <div className="mi-dropdown">
-                <Badge dot offset={[-2, 2]}>
+                <Badge dot={Boolean(this.props.notificationsCount)} offset={[-2, 2]}>
                   <Avatar size="small" icon="user" />
                 </Badge>
                 <span> 欢迎您! 用户A </span>
