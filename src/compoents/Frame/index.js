@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Layout, Menu, Breadcrumb, Icon, Dropdown, Avatar, Badge } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { logout } from '../../actions/user'
 
 import { getNotificationList } from '../../actions/notifications'
 
@@ -12,21 +13,27 @@ const { Header, Content, Sider, } = Layout
 
 const mapState = state => {
   return {
-    notificationsCount: state.notifications.list.filter(item => item.hasRead === false).length
+    notificationsCount: state.notifications.list.filter(item => item.hasRead === false).length,
+    avatar: state.user.avatar,
+    displayName: state.user.displayName
   }
 }
 
 // @withRouter
-@connect(mapState, { getNotificationList })
+@connect(mapState, { getNotificationList, logout })
 class Frame extends Component {
   onMenuClick = ({ key }) => {
     // console.log(this.props)
     this.props.history.push(key)
   }
 
-  // onDropdownMenuClick = ({ key }) => {
-  //   this.props.history.push(key)
-  // }
+  onDropdownMenuClick = ({ key }) => {
+    if (key === "/login") {
+      this.props.logout()
+    } else {
+      this.props.history.push(key)
+    }
+  }
 
   componentDidMount() {
     this.props.getNotificationList()
@@ -39,7 +46,7 @@ class Frame extends Component {
 
     // 渲染下拉菜单方法
     const renderDropdownMenu = () => (
-      <Menu onClick={this.onMenuClick}>
+      <Menu onClick={this.onDropdownMenuClick}>
         <Menu.Item key="/admin/notifications">
           <Badge count={this.props.notificationsCount} offset={[30, 6]}>
             通知中心
@@ -64,9 +71,9 @@ class Frame extends Component {
             <Dropdown overlay={renderDropdownMenu}>
               <div className="mi-dropdown">
                 <Badge dot={Boolean(this.props.notificationsCount)} offset={[-2, 2]}>
-                  <Avatar size="small" icon="user" />
+                  <Avatar src={this.props.avatar} />
                 </Badge>
-                <span> 欢迎您! 用户A </span>
+                <span> 欢迎您! {this.props.displayName}</span>
                 <Icon type="down" />
               </div>
             </Dropdown>

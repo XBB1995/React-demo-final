@@ -8,6 +8,10 @@ const service = axios.create({
   baseURL: isDev ? 'http://rap2api.taobao.org/app/mock/244468' : ''
 })
 
+const serviceLogin = axios.create({
+  baseURL: isDev ? 'http://rap2api.taobao.org/app/mock/244468' : ''
+})
+
 // 使用实例拦截请求
 service.interceptors.request.use((config) => {
   // 浅复制
@@ -68,4 +72,9 @@ export const getArticleAmount = () => {
 // 获取通知列表
 export const getNotifications = () => {
   return service.post('/api/v1/notifications')
+}
+
+// 登录
+export const loginRequest = (userInfo) => {
+  return serviceLogin.post('/api/v1/login', userInfo)
 }

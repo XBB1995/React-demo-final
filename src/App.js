@@ -3,6 +3,11 @@ import React, { Component } from 'react'
 import { adminRoutes } from './routes'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { Frame } from './compoents'
+import { connect } from 'react-redux'
+
+const mapState = state => ({
+  isLogin: state.user.isLogin
+})
 
 // 通过 Frame 传递 menus 参数
 const menus = adminRoutes.filter(route => route.isNav === true)
@@ -26,32 +31,38 @@ const menus = adminRoutes.filter(route => route.isNav === true)
 // }
 
 // @testHOC
+@connect(mapState)
 class App extends Component {
   render() {
     return (
-      <Frame menus={menus}>
-        <Switch>
-          {
-            adminRoutes.map(route => {
-              return (
-                <Route
-                  key={route.pathname}
-                  path={route.pathname}
-                  // exact 的值还是需要通过属性确定是否为 true
-                  exact={route.exact}
-                  // 涉及到权限的需要用render来渲染组件
-                  render={(routeProps) => {
-                    // console.log(routeProps)
-                    return <route.component {...routeProps} />
-                  }}
-                />
-              )
-            })
-          }
-          <Redirect to={adminRoutes[0].pathname} from="/admin" exact />
-          <Redirect to="/404" />
-        </Switch>
-      </Frame>
+      this.props.isLogin
+        ?
+        <Frame menus={menus}>
+          <Switch>
+            {
+              adminRoutes.map(route => {
+                return (
+                  <Route
+                    key={route.pathname}
+                    path={route.pathname}
+                    // exact 的值还是需要通过属性确定是否为 true
+                    exact={route.exact}
+                    // 涉及到权限的需要用render来渲染组件
+                    render={(routeProps) => {
+                      // console.log(routeProps)
+                      return <route.component {...routeProps} />
+                    }}
+                  />
+                )
+              })
+            }
+            <Redirect to={adminRoutes[0].pathname} from="/admin" exact />
+            <Redirect to="/404" />
+          </Switch>
+        </Frame>
+        :
+        <Redirect to="/login" />
+
     )
   }
 }
