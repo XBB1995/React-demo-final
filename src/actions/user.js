@@ -28,6 +28,15 @@ const loginFailed = () => {
   }
 }
 
+export const changeAvatar = (avatarURL) => {
+  return {
+    type: actionTypes.CHANGE_AVATAR,
+    payload: {
+      avatarURL
+    }
+  }
+}
+
 export const logout = () => {
   return dispatch => {
     // 实际上 需要告诉服务端 用户退出登录

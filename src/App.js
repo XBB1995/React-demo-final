@@ -6,7 +6,8 @@ import { Frame } from './compoents'
 import { connect } from 'react-redux'
 
 const mapState = state => ({
-  isLogin: state.user.isLogin
+  isLogin: state.user.isLogin,
+  role: state.user.role
 })
 
 // 通过 Frame 传递 menus 参数
@@ -50,7 +51,14 @@ class App extends Component {
                     // 涉及到权限的需要用render来渲染组件
                     render={(routeProps) => {
                       // console.log(routeProps)
-                      return <route.component {...routeProps} />
+                      const hasPermisson = route.roles.includes(this.props.role)
+                      return (
+                        hasPermisson
+                          ?
+                          <route.component {...routeProps} />
+                          :
+                          <Redirect to='/admin/noauth' />
+                      )
                     }}
                   />
                 )

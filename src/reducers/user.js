@@ -6,7 +6,9 @@ const userInfo = JSON.parse(window.localStorage.getItem("userInfo")) || JSON.par
 const initState = {
   ...userInfo,
   isLogin,
-  isLoading: false
+  isLoading: false,
+  // 用户的访问权限级别
+  role: "003"
 }
 
 export default (state = initState, action) => {
@@ -24,7 +26,20 @@ export default (state = initState, action) => {
         isLoading: false
       }
     case actionTypes.LOGIN_FAILED:
-      return initState
+      return {
+        id: '',
+        displayName: '',
+        avatar: '',
+        isLogin,
+        isLoading: false,
+        // 用户的访问权限级别
+        role: "003"
+      }
+    case actionTypes.CHANGE_AVATAR:
+      return {
+        ...state,
+        avatar: action.payload.avatarURL
+      }
     default:
       return state
   }

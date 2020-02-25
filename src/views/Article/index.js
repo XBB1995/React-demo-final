@@ -38,6 +38,13 @@ export default class ArticleList extends Component {
     }
   }
 
+  // 定制 增加组件渲染状态检验的 setState 方法
+  setData = (state) => {
+    // 如果组件已经销毁 (componentWillUnmount) 则取消数据设置
+    if (!this.updater.isMounted(this)) return
+    this.setState(state)
+  }
+
   // 获取数据
   getData = () => {
     this.setState({
@@ -46,7 +53,7 @@ export default class ArticleList extends Component {
     getArticles(this.state.offset, this.state.limited)
       .then(resp => {
         const columnsKeys = Object.keys(resp.list[0])
-        this.setState({
+        this.setData({
           total: resp.total,
           dataSource: resp.list,
           columns: this.createColumns(columnsKeys)
@@ -56,7 +63,7 @@ export default class ArticleList extends Component {
         // 处理错误
       })
       .finally(() => {
-        this.setState({
+        this.setData({
           isLoading: false
         })
       })

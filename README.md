@@ -35,10 +35,15 @@
   3. 三维 webgl
   ## 数据可视化
   UI界面设计与通知中心的基本设置
-# 通知中心数据 给予redux进行管理
+# 通知中心数据 登录界面 给予redux进行管理
   ## action reducer store
   ## 库
    1. react-redux
    2. redux
    3. redux-thunk
   ## 具体红点及数字逻辑实现
+  ## 登录的状态管理 
+        // 如果组件已经销毁 (componentWillUnmount) 
+        // 则取消数据设置
+        if (!this.updater.isMounted(this)) return
+  ## 上传图片 FormData 保存图片信息
